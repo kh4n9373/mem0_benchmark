@@ -1,0 +1,46 @@
+# Mem0 Benchmark Package - Git Ignore
+
+# Dataset (downloaded by setup.sh)
+data/
+
+# Memory databases (created during indexing)
+*_memory*/
+test_memory*/
+locomo_memory*/
+
+# Output results
+benchmark_results/
+test_results*/
+*_results/
+
+# Worker logs
+worker_logs/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+*.tmp
+*.bak

@@ -1,0 +1,71 @@
+================================================================================
+                    MEM0 BENCHMARK - ESSENTIAL FILES
+================================================================================
+
+📘 DOCUMENTATION (2 files only)
+├── README.md               Main guide (quick start, usage, troubleshooting)
+└── INSTALL.md             Installation guide (detailed steps)
+
+🔧 SETUP & RUN (3 files)
+├── setup.sh               Setup everything (run this first)
+├── quick_test.sh          Quick test (20 questions)
+└── full_benchmark.sh      Full benchmark (199 questions)
+
+🐍 PYTHON SCRIPTS (4 files)
+├── mem0_full_pipeline.py       Main orchestrator
+├── mem0_parallel_index.py      Parallel indexing
+├── mem0_process_index.py       Indexing logic
+└── mem0_process_retrieve.py    Retrieval logic
+
+📋 CONFIG (2 files)
+├── requirements.txt       All dependencies (145 packages)
+└── .gitignore            Ignore generated files
+
+================================================================================
+TOTAL: 11 essential files
+================================================================================
+
+⚠️  IGNORE (from mem0 library source):
+- CONTRIBUTING.md, LLM.md, MIGRATION_GUIDE_v1.0.md
+- download_dataset.py, test_config.py
+- cookbooks/, docs/, examples/, etc.
+
+These are from the mem0 library repo, not part of benchmark package.
+
+================================================================================
+                         QUICK START
+================================================================================
+
+1. cd mem0/
+2. conda activate mem0
+3. ./setup.sh
+4. ./quick_test.sh
+
+================================================================================
+                    PACKAGE FOR DISTRIBUTION
+================================================================================
+
+To create clean package:
+
+cd /home/vinhpq/mem_baseline
+
+# Create clean directory
+mkdir mem0_benchmark
+cp mem0/README.md mem0_benchmark/
+cp mem0/INSTALL.md mem0_benchmark/
+cp mem0/setup.sh mem0_benchmark/
+cp mem0/quick_test.sh mem0_benchmark/
+cp mem0/full_benchmark.sh mem0_benchmark/
+cp mem0/mem0_full_pipeline.py mem0_benchmark/
+cp mem0/mem0_parallel_index.py mem0_benchmark/
+cp mem0/mem0_process_index.py mem0_benchmark/
+cp mem0/mem0_process_retrieve.py mem0_benchmark/
+cp mem0/requirements.txt mem0_benchmark/
+cp mem0/.gitignore mem0_benchmark/
+cp retrieval_evaluator.py mem0_benchmark/../
+cp generation_evaluator.py mem0_benchmark/../
+
+# Package it
+tar czf mem0_benchmark.tar.gz mem0_benchmark/
+
+================================================================================

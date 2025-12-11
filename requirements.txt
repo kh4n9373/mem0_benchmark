@@ -1,0 +1,18 @@
+# Core dependencies
+mem0ai @ git+https://github.com/mem0ai/mem0.git@a199ee4ff867377a0f3ab9dfe6a9dc73046978ec
+openai>=1.90.0,<1.110.0
+chromadb>=1.3.0
+sentence-transformers>=5.0.0
+huggingface-hub>=0.36.0
+
+# Evaluation metrics
+rouge-score>=0.1.2
+sacrebleu>=2.5.0
+bert-score>=0.3.13
+
+# Utilities
+tqdm>=4.67.0
+python-dotenv>=1.2.0
+pydantic>=2.12.0
+
+# Let mem0ai handle the rest of dependencies
