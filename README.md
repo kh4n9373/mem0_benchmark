@@ -13,7 +13,8 @@ cd mem0/
 
 # 2. Run
 ./quick_test.sh              # Quick test (20 questions, ~10 min)
-./full_benchmark.sh          # Full benchmark (199 questions, ~60 min)
+./full_benchmark_locomo.sh          # Full benchmark for locomo
+./full_benchmark_longmemeval.sh     # Or benchmark for longmemeval
 ```
 
 ## What It Does
@@ -40,7 +41,7 @@ Results (JSON + terminal summary)
 mem0/
 ├── setup.sh                 Setup everything
 ├── quick_test.sh           Quick test
-├── full_benchmark.sh       Full benchmark
+├── full_benchmark_{dataset_name}.sh       Full benchmark
 │
 ├── mem0_full_pipeline.py   Main orchestrator
 ├── mem0_parallel_index.py  Parallel indexing
@@ -75,7 +76,7 @@ Results saved to `benchmark_results/` or `test_results_pipeline/`:
 
 ## Configuration
 
-Edit `quick_test.sh` or `full_benchmark.sh` to change:
+Edit `quick_test.sh` or `full_benchmark_{dataset}.sh` to change:
 
 ```bash
 --llm_model Qwen/Qwen3-8B           # LLM model name

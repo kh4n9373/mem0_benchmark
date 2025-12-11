@@ -4,13 +4,13 @@
 
 cd "$(dirname "$0")"
 
-echo "🚀 Running full benchmark (all questions)..."
+echo "🚀 Running full locomo benchmark (all questions)..."
 echo ""
 
 python3 mem0_full_pipeline.py \
-    data/locomo/processed_data/locomo_small.json \
+    data/locomo/processed_data/locomo_processed_data.json \
     locomo_memory_benchmark \
-    benchmark_results \
+    locomo_results_benchmark \
     --max_workers 2 \
     --llm_model Qwen/Qwen3-8B \
     --api_key dummy \

@@ -106,20 +106,12 @@ EOF
         exit 1
     fi
     
-    # Create symlink for expected filename
-    if [ -f "data/locomo/processed_data/locomo_processed_data.json" ] && [ ! -f "data/locomo/processed_data/locomo_small.json" ]; then
-        cd data/locomo/processed_data
-        ln -sf locomo_processed_data.json locomo_small.json
-        cd ../../..
-        echo "✅ Created symlink: locomo_small.json -> locomo_processed_data.json"
-    fi
-    
     # Verify download
-    if [ -f "data/locomo/processed_data/locomo_small.json" ]; then
-        echo "✅ Dataset verified: data/locomo/processed_data/locomo_small.json"
+    if [ -f "data/locomo/processed_data/locomo_processed_data.json" ]; then
+        echo "✅ Dataset verified: data/locomo/processed_data/locomo_processed_data.json"
     else
         echo "❌ Dataset file not found"
-        echo "   Expected: data/locomo/processed_data/locomo_small.json"
+        echo "   Expected: data/locomo/processed_data/locomo_processed_data.json"
         exit 1
     fi
 fi
@@ -161,7 +153,7 @@ echo "  2. Run quick test (20 questions, ~5-10 min):"
 echo "     ./quick_test.sh"
 echo ""
 echo "  3. Or run full benchmark (199 questions, ~45-60 min):"
-echo "     ./full_benchmark.sh"
+echo "     ./full_benchmark_{dataset_name}.sh"
 echo ""
 echo "💡 Tips:"
 echo "  - Edit *.sh files to change LLM model/server settings"
