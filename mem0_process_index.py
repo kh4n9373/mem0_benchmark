@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 from tqdm.auto import tqdm
 from mem0 import Memory
+import openai
 
 
 def process_indexing(
@@ -57,6 +58,12 @@ def process_indexing(
         conv_dir = os.path.join(base_output_dir, conv_id)
         os.makedirs(conv_dir, exist_ok=True)
         
+        # Check if already completed
+        completed_flag = os.path.join(conv_dir, "completed.flag")
+        if os.path.exists(completed_flag):
+            print(f"\nSkipping conversation {conv_idx + 1}/{len(dataset)}: {conv_id} (Already indexed)")
+            continue
+        
         print(f"\nProcessing conversation {conv_idx + 1}/{len(dataset)}: {conv_id}")
         print(f"  Chunks to add: {len(chunks)}")
         
@@ -76,22 +83,48 @@ def process_indexing(
                          "model": model_name
                      }
                 },
-                 "llm": {
+                "llm": {
                     "provider": llm_backend,
                     "config": {
                         "model": llm_model,
                         "api_key": api_key, # "dummy" or real key
+                        "max_tokens": 4096,
+                        "temperature": 0.0,
                     }
                 }
             }
             
+            if disable_thinking:
+                config["custom_fact_extraction_prompt"] = (
+                    "You are a helpful assistant that extracts facts and memories from conversations. "
+                    "Your response MUST be a valid JSON object with a key 'facts' containing a list of strings. "
+                    "Do NOT include any thinking, reasoning, or markdown code blocks. "
+                    "Do NOT output anything other than the JSON object."
+                )
+            
             if base_url:
                 config["llm"]["config"]["openai_base_url"] = base_url
 
+            # Load progress if exists
+            progress_file = os.path.join(conv_dir, "indexing_progress.json")
+            start_chunk_idx = 0
+            if os.path.exists(progress_file):
+                try:
+                    with open(progress_file, 'r') as f:
+                        saved_progress = json.load(f)
+                        start_chunk_idx = saved_progress.get("last_indexed_chunk", 0)
+                        if start_chunk_idx > 0:
+                            print(f"  Resuming from chunk {start_chunk_idx}/{len(chunks)}")
+                except Exception as e:
+                    print(f"  Warning: Could not read progress file: {e}")
+
             memory = Memory.from_config(config)
             
-            added_count = 0
+            added_count = start_chunk_idx
             for i, chunk_data in enumerate(tqdm(chunks, desc=f"Adding chunks [{conv_id}]", leave=False)):
+                if i < start_chunk_idx:
+                    continue
+                    
                 try:
                     content = chunk_data["content"]
                     timestamp = chunk_data["timestamp"]
@@ -110,6 +143,11 @@ def process_indexing(
                         infer=True 
                     )
                     added_count += 1
+                    
+                    # Save progress
+                    with open(progress_file, 'w') as f:
+                        json.dump({"last_indexed_chunk": i + 1, "timestamp": timestamp}, f)
+                    
                 except Exception as e:
                     print(f"  Error adding chunk {i} for {conv_id}: {e}")
                     continue
@@ -124,8 +162,16 @@ def process_indexing(
             }
             index_metadata.append(metadata)
             
+            # Write completion flag
+            with open(completed_flag, "w") as f:
+                f.write("completed")
+            
             print(f"  Successfully indexed {added_count}/{len(chunks)} chunks")
             
+        except (openai.APIConnectionError, openai.InternalServerError, openai.AuthenticationError) as e:
+            print(f"\n❌ Critical LLM Error processing {conv_id}: {e}")
+            print("Stopping worker due to critical failure.")
+            sys.exit(1)
         except Exception as e:
             print(f"  Failed to index conversation {conv_id}: {e}")
             continue

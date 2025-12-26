@@ -41,4 +41,4 @@ class HuggingFaceEmbedding(EmbeddingBase):
                 input=text, model=self.config.model, **self.config.model_kwargs
             ).data[0].embedding
         else:
-            return self.model.encode(text, convert_to_numpy=True).tolist()
+            return self.model.encode(text, convert_to_numpy=True, normalize_embeddings=True).tolist()

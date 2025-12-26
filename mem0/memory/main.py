@@ -446,17 +446,24 @@ class Memory(MemoryBase):
             else:
                 try:
                     # First try direct JSON parsing
-                    new_retrieved_facts = json.loads(response)["facts"]
+                    parsed = json.loads(response)
+                    new_retrieved_facts = parsed.get("facts", [])
                 except json.JSONDecodeError:
                     # Try extracting JSON from response using built-in function
                     extracted_json = extract_json(response)
-                    new_retrieved_facts = json.loads(extracted_json)["facts"]
+                    parsed = json.loads(extracted_json)
+                    new_retrieved_facts = parsed.get("facts", [])
         except Exception as e:
-            logger.error(f"Error in new_retrieved_facts: {e}")
+            # Truncate response to avoid log spam if LLM hallucinates massive text
+            truncated_response = response[:500] + "..." if len(response) > 500 else response
+            logger.error(f"Error in new_retrieved_facts: {e}. Output was: {truncated_response}")
             new_retrieved_facts = []
 
         if not new_retrieved_facts:
+            logger.warning(f"No facts extracted! LLM Response: {response[:200]}...")
             logger.debug("No new facts retrieved from input. Skipping memory update LLM call.")
+        else:
+            logger.info(f"Extracted {len(new_retrieved_facts)} facts: {new_retrieved_facts}")
 
         retrieved_old_memory = []
         new_message_embeddings = {}
@@ -539,25 +546,35 @@ class Memory(MemoryBase):
                         )
                         returned_memories.append({"id": memory_id, "memory": action_text, "event": event_type})
                     elif event_type == "UPDATE":
+                        memory_id = temp_uuid_mapping.get(resp.get("id"))
+                        if not memory_id:
+                            logger.warning(f"Invalid memory_id {resp.get('id')} for UPDATE action. Skipping.")
+                            continue
+                            
                         self._update_memory(
-                            memory_id=temp_uuid_mapping[resp.get("id")],
+                            memory_id=memory_id,
                             data=action_text,
                             existing_embeddings=new_message_embeddings,
                             metadata=deepcopy(metadata),
                         )
                         returned_memories.append(
                             {
-                                "id": temp_uuid_mapping[resp.get("id")],
+                                "id": memory_id,
                                 "memory": action_text,
                                 "event": event_type,
                                 "previous_memory": resp.get("old_memory"),
                             }
                         )
                     elif event_type == "DELETE":
-                        self._delete_memory(memory_id=temp_uuid_mapping[resp.get("id")])
+                        memory_id = temp_uuid_mapping.get(resp.get("id"))
+                        if not memory_id:
+                            logger.warning(f"Invalid memory_id {resp.get('id')} for DELETE action. Skipping.")
+                            continue
+                            
+                        self._delete_memory(memory_id=memory_id)
                         returned_memories.append(
                             {
-                                "id": temp_uuid_mapping[resp.get("id")],
+                                "id": memory_id,
                                 "memory": action_text,
                                 "event": event_type,
                             }

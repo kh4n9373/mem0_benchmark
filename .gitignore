@@ -44,3 +44,6 @@ Thumbs.db
 *.log
 *.tmp
 *.bak
+
+locomo_results_benchmark/
+debug_contriever.py

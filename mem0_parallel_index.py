@@ -6,11 +6,15 @@ import time
 from typing import List
 import os
 
+import threading
+
 def run_parallel_indexing():
     parser = argparse.ArgumentParser(description="Run parallel indexing for Mem0")
     
     # Parallel processing args
     parser.add_argument("--max_workers", type=int, default=1, help="Number of parallel workers")
+    parser.add_argument("--log_dir", default=None, help="Directory to store worker logs")
+    parser.add_argument("--stream_logs", action="store_true", help="Stream worker logs to console")
     
     # Pass-through args
     args, unknown_args = parser.parse_known_args()
@@ -24,10 +28,25 @@ def run_parallel_indexing():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.join(script_dir, "mem0_process_index.py")
     
-    # Create logs directory in script directory
-    logs_dir = os.path.join(script_dir, "worker_logs")
+    # Create logs directory
+    if args.log_dir:
+        logs_dir = os.path.abspath(args.log_dir)
+    else:
+        logs_dir = os.path.join(script_dir, "worker_logs")
+    
     os.makedirs(logs_dir, exist_ok=True)
     
+    def log_streamer(proc, log_path, worker_id):
+        """Reads stdout/stderr from process and writes to both file and console."""
+        with open(log_path, "w") as f:
+            for line in proc.stdout:
+                # Write to file
+                f.write(line)
+                f.flush()
+                # Write to console with worker prefix
+                sys.stdout.write(f"[{worker_id}] {line}")
+                sys.stdout.flush()
+
     try:
         for i in range(args.max_workers):
             # Construct command for this worker
@@ -44,29 +63,60 @@ def run_parallel_indexing():
             log_file = os.path.join(logs_dir, f"worker_{i}.log")
             print(f"Starting worker {i+1}/{args.max_workers} -> logging to {log_file}")
             
-            # Redirect stdout and stderr to file
-            with open(log_file, "w") as f:
-                process = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT)
+            if args.stream_logs:
+                # Pipe mode for streaming
+                process = subprocess.Popen(
+                    cmd, 
+                    stdout=subprocess.PIPE, 
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                    bufsize=1 # Line buffered
+                )
+                
+                # Start streamer thread
+                t = threading.Thread(target=log_streamer, args=(process, log_file, i))
+                t.daemon = True
+                t.start()
+                
+            else:
+                # File redirection mode (original)
+                with open(log_file, "w") as f:
+                    process = subprocess.Popen(cmd, stdout=f, stderr=subprocess.STDOUT)
+            
             workers.append(process)
             
         print("\nAll workers started.")
         print(f"To view progress, run: tail -f {logs_dir}/worker_*.log")
         print("Waiting for completion...")
         
-        # Wait for all workers to complete
-        exit_codes = []
-        for p in workers:
-            exit_codes.append(p.wait())
+        # Wait for workers with polling (Fail-Fast)
+        while True:
+            all_finished = True
+            any_failed = False
+            
+            for p in workers:
+                ret = p.poll()
+                if ret is None:
+                    all_finished = False
+                elif ret != 0:
+                    any_failed = True
+                    break # Break inner loop
+            
+            if any_failed:
+                print("\n❌ A worker failed! Terminating all other workers...")
+                for p in workers:
+                    if p.poll() is None:
+                        p.terminate()
+                sys.exit(1)
+            
+            if all_finished:
+                break
+                
+            time.sleep(1) # Poll every second
             
         duration = time.time() - start_time
         print(f"\nAll workers completed in {duration:.2f}s")
-        
-        # Check if any worker failed
-        if any(code != 0 for code in exit_codes):
-            print("WARNING: Some workers failed!")
-            sys.exit(1)
-        else:
-            print("SUCCESS: All workers completed successfully.")
+        print("SUCCESS: All workers completed successfully.")
             
     except KeyboardInterrupt:
         print("\nStopping all workers...")

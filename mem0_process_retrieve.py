@@ -95,6 +95,7 @@ def process_retrieval(
                 # Format results
                 retrieved_chunks = []
                 for res in actual_results:
+                     metadata = res.get("metadata", {})
                      retrieved_chunks.append({
                         "id": res.get("id"),
                         "content": metadata.get("original_content", res.get("memory")),  # 👈 ƯU TIÊN LẤY CONTENT GỐC

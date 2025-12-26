@@ -112,6 +112,8 @@ def main():
     
     # Parallel processing
     parser.add_argument("--max_workers", type=int, default=2, help="Number of parallel indexing workers")
+    parser.add_argument("--log_dir", default="worker_logs", help="Directory to store worker logs")
+    parser.add_argument("--stream_logs", action="store_true", help="Stream worker logs to console")
     
     # LLM config
     parser.add_argument("--llm_model", default="Qwen/Qwen3-8B", help="LLM model for Mem0")
@@ -180,6 +182,7 @@ def main():
         args.dataset_file,
         args.memory_dir,
         "--max_workers", str(args.max_workers),
+        "--log_dir", args.log_dir,
         "--model_name", args.embedding_model,
         "--llm_backend", "openai",
         "--llm_model", args.llm_model,
@@ -188,6 +191,8 @@ def main():
     ]
     if args.disable_thinking:
         index_cmd.append("--disable_thinking")
+    if args.stream_logs:
+        index_cmd.append("--stream_logs")
     
     timings['indexing'] = run_command(
         index_cmd,
