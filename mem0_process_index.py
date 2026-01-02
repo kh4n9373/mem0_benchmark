@@ -59,6 +59,7 @@ def process_indexing(
         os.makedirs(conv_dir, exist_ok=True)
         
         # Check if already completed
+        # Note: We rely on completed.flag for total completion, but we also check individual progress below
         completed_flag = os.path.join(conv_dir, "completed.flag")
         if os.path.exists(completed_flag):
             print(f"\nSkipping conversation {conv_idx + 1}/{len(dataset)}: {conv_id} (Already indexed)")
@@ -105,31 +106,39 @@ def process_indexing(
             if base_url:
                 config["llm"]["config"]["openai_base_url"] = base_url
 
-            # Load progress if exists
+            # Load granular progress
             progress_file = os.path.join(conv_dir, "indexing_progress.json")
-            start_chunk_idx = 0
+            completed_indices = set()
+            
             if os.path.exists(progress_file):
                 try:
                     with open(progress_file, 'r') as f:
                         saved_progress = json.load(f)
-                        start_chunk_idx = saved_progress.get("last_indexed_chunk", 0)
-                        if start_chunk_idx > 0:
-                            print(f"  Resuming from chunk {start_chunk_idx}/{len(chunks)}")
+                        # Support legacy format (int) by converting to range, or new format (list)
+                        if "last_indexed_chunk" in saved_progress:
+                            # Migrate legacy to new format
+                            last_idx = saved_progress.get("last_indexed_chunk", 0)
+                            completed_indices = set(range(last_idx))
+                        else:
+                            completed_indices = set(saved_progress.get("completed_indices", []))
+                            
+                    if completed_indices:
+                        print(f"  Resuming: {len(completed_indices)}/{len(chunks)} chunks already completed")
                 except Exception as e:
                     print(f"  Warning: Could not read progress file: {e}")
 
             memory = Memory.from_config(config)
             
-            added_count = start_chunk_idx
+            failed_chunks_count = 0
+            
             for i, chunk_data in enumerate(tqdm(chunks, desc=f"Adding chunks [{conv_id}]", leave=False)):
-                if i < start_chunk_idx:
+                if i in completed_indices:
                     continue
                     
                 try:
                     content = chunk_data["content"]
                     timestamp = chunk_data["timestamp"]
-                     # Truncate if too long
-                    # chunk_text = content[:2000] if len(content) > 2000 else content
+                    
                     chunk_text_with_time = f"[Timestamp: {timestamp}]\n{content}"
                     chunk_text_with_time = chunk_text_with_time[:2000] if len(chunk_text_with_time) > 2000 else chunk_text_with_time
 
@@ -142,38 +151,63 @@ def process_indexing(
                         },
                         infer=True 
                     )
-                    added_count += 1
                     
-                    # Save progress
+                    # Mark as success
+                    completed_indices.add(i)
+                    
+                    # Save progress immediately
                     with open(progress_file, 'w') as f:
-                        json.dump({"last_indexed_chunk": i + 1, "timestamp": timestamp}, f)
+                        json.dump({"completed_indices": list(completed_indices), "timestamp": timestamp}, f)
+                    
+                except (openai.APIConnectionError, openai.InternalServerError, openai.APITimeoutError, openai.RateLimitError) as e:
+                    # TRANSIENT ERROR: Do NOT mark as completed. Will retry next run.
+                    print(f"\n  ⚠️  Transient API Error processing chunk {i} for {conv_id}: {e}")
+                    print("     -> Marking as FAILED (will retry next time)")
+                    failed_chunks_count += 1
+                    continue
+                    
+                except openai.AuthenticationError as e:
+                    # FATAL ERROR: Stop everything
+                    print(f"\n❌ FATAL Authentication Error: {e}")
+                    sys.exit(1)
                     
                 except Exception as e:
-                    print(f"  Error adding chunk {i} for {conv_id}: {e}")
-                    continue
+                    # CONTENT/LOGIC ERROR: Mark as completed (skip next time) per user request
+                    print(f"\n  ⚠️  Content/Logic Error processing chunk {i} for {conv_id}: {e}")
+                    print("     -> Marking as COMPLETED/SKIPPED (will NOT retry)")
+                    
+                    completed_indices.add(i)
+                    with open(progress_file, 'w') as f:
+                        json.dump({"completed_indices": list(completed_indices), "timestamp": timestamp}, f)
+                    
+                    # Optional: Could add to a separate "error_log" list in the file if desired, 
+                    # but broadly treats as "done/skipped".
+            
+            # Report status for this conversation
+            if failed_chunks_count > 0:
+                print(f"  ⚠️  Finished with {failed_chunks_count} FAILED chunks (Transient errors).")
+                print("      Run script again to retry these chunks.")
+            else:
+                # Only write completed flag if ALL chunks are accounted for (completed or skipped-as-completed)
+                # AND we didn't have transient failures that caused us to skip the loop
+                if len(completed_indices) == len(chunks):
+                    with open(completed_flag, "w") as f:
+                        f.write("completed")
+                    print(f"  ✅ Conversation completed successfully ({len(chunks)} chunks)")
             
             # Save metadata
             metadata = {
                 "conv_id": conv_id,
                 "num_chunks": len(chunks),
-                "num_indexed": added_count,
+                "num_indexed": len(completed_indices),
                 "persist_directory": conv_dir,
                 "model_name": model_name,
+                "status": "partial" if failed_chunks_count > 0 else "complete"
             }
             index_metadata.append(metadata)
             
-            # Write completion flag
-            with open(completed_flag, "w") as f:
-                f.write("completed")
-            
-            print(f"  Successfully indexed {added_count}/{len(chunks)} chunks")
-            
-        except (openai.APIConnectionError, openai.InternalServerError, openai.AuthenticationError) as e:
-            print(f"\n❌ Critical LLM Error processing {conv_id}: {e}")
-            print("Stopping worker due to critical failure.")
-            sys.exit(1)
         except Exception as e:
-            print(f"  Failed to index conversation {conv_id}: {e}")
+            print(f"  Failed to initialize/process conversation {conv_id}: {e}")
             continue
     
     # Save index metadata
@@ -224,15 +258,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-"""
-python3 /home/vinhpq/mem_baseline/mem0/mem0_parallel_index.py \
-    /home/vinhpq/mem_baseline/locomo_dataset/processed_data/locomo_processed_data.json \
-    /home/vinhpq/mem_baseline/mem0/locomo_memory \
-    --max_workers 5 \
-    --model_name facebook/contriever \
-    --llm_backend openai \
-    --llm_model qwen3-8b \
-    --api_key dummy \
-    --base_url https://120aa1600a49.ngrok-free.app/v1 \
-    --disable_thinking
-"""

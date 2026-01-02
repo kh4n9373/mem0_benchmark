@@ -4,7 +4,7 @@ echo "🚀 Running full locomo benchmark (all questions)..."
 echo ""
 
 python3 mem0_full_pipeline.py \
-    data/locomo/processed_data/locomo_processed_data.json \
+    data/locomo/processed_data/locomo_lite.json \
     locomo_memory_benchmark \
     locomo_results_benchmark \
     --max_workers 2 \

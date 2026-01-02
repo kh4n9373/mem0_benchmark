@@ -59,20 +59,27 @@ export TEMP=$TMPDIR
 export TMP=$TMPDIR
 mkdir -p "$TMPDIR"
 
+# Check for uv
+if ! command -v uv &> /dev/null; then
+    echo "⬇️  Installing uv for faster installation..."
+    pip install uv --quiet
+fi
+
 if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt --quiet
+    echo "⚡ Using uv for fast installation..."
+    uv pip install -r requirements.txt --quiet --system
     if [ $? -eq 0 ]; then
         echo "✅ Python packages installed from requirements.txt"
     else
         echo "❌ Failed to install packages from requirements.txt"
-        echo "   Try manually: pip install -r requirements.txt"
+        echo "   Try manually: uv pip install -r requirements.txt --system"
         exit 1
     fi
 else
     # Fallback: install essential packages individually
     echo "⚠️  requirements.txt not found. Installing essential packages..."
-    pip install mem0ai openai chromadb sentence-transformers huggingface-hub \
-                rouge-score sacrebleu bert-score tqdm --quiet
+    uv pip install mem0ai openai chromadb sentence-transformers huggingface-hub \
+                rouge-score sacrebleu bert-score tqdm --quiet --system
     echo "✅ Essential packages installed"
 fi
 echo ""
@@ -140,7 +147,7 @@ echo "✅ Setup completed!"
 echo "============================================================"
 echo ""
 echo "📋 What was done:"
-echo "  ✓ Python dependencies installed"
+echo "  ✓ Python dependencies installed (using uv)"
 echo "  ✓ LoCoMo dataset downloaded to data/locomo/"
 echo "  ✓ Directories created (worker_logs/, benchmark_results/, etc.)"
 echo ""
