@@ -149,16 +149,16 @@ EOF
 check_dataset() {
     print_header "STEP 3: Dataset Check"
     
-    if [ ! -f "$DATASET_PATH" ]; then
-        print_warning "Dataset not found. Downloading..."
-        mkdir -p "$(dirname "$DATASET_PATH")"
+    if [ ! -d "$SCRIPT_DIR/data" ]; then
+        print_warning "Data directory not found. Downloading from HuggingFace..."
+        mkdir -p "$SCRIPT_DIR/data"
         
         uv run python - <<EOF
 from huggingface_hub import snapshot_download
 try:
     snapshot_download(
-        repo_id="KhangPTT373/longmemeval",
-        local_dir="data/longmemeval",
+        repo_id="KhangPTT373/locomo",
+        local_dir="data",
         repo_type="dataset"
     )
     print("✅ Dataset downloaded")
@@ -166,7 +166,11 @@ except Exception as e:
     print(f"❌ Download failed: {e}")
     exit(1)
 EOF
-        [ $? -eq 0 ] || exit_with_error "Failed to download dataset"
+        [ $? -eq 0 ] || exit_with_error "Failed to download dataset from HuggingFace"
+    fi
+    
+    if [ ! -f "$DATASET_PATH" ]; then
+        exit_with_error "Dataset file not found: $DATASET_PATH"
     fi
     
     local lines=$(wc -l < "$DATASET_PATH")

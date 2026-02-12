@@ -22,6 +22,8 @@ CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen2.5-7B-Instruct \
 bash ./full_benchmark_locomo.sh
 ```
 
+**First run**: Auto-downloads dataset (~3GB) + embedding model (~2GB).
+
 ### 3. View Results
 
 ```bash

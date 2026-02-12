@@ -58,6 +58,7 @@ bash ./full_benchmark_locomo.sh
 **What it does**:
 - Auto-installs all dependencies
 - Auto-starts Neo4j
+- **Auto-downloads dataset from HuggingFace** (~3GB, first run only)
 - Auto-downloads embedding model (~2GB, first run only)
 - Runs full benchmark (10-30 min)
 
