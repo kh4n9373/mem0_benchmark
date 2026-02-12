@@ -1,0 +1,27 @@
+{
+  "timestamp": "20251210_180913",
+  "config": {
+    "dataset_file": "/home/vinhpq/mem_baseline/mem0/data/locomo/processed_data/locomo_small.json",
+    "memory_dir": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_180913",
+    "output_dir": "/home/vinhpq/mem_baseline/mem0/test_results_20251210_180913",
+    "max_workers": 1,
+    "llm_model": "Qwen/Qwen3-8B",
+    "embedding_model": "facebook/contriever",
+    "top_k": 100,
+    "context_k": 5,
+    "eval_ks": "3,5,10",
+    "disable_thinking": true
+  },
+  "timings": {
+    "indexing": 2871.3531229496,
+    "retrieval": 90.52881479263306,
+    "retrieval_eval": 0.2859179973602295,
+    "generation_eval": 23.187002182006836
+  },
+  "total_time": 2985.35529756546,
+  "output_files": {
+    "retrieval_results": "/home/vinhpq/mem_baseline/mem0/test_results_20251210_180913/retrieval_results_20251210_180913.json",
+    "retrieval_evaluation": "/home/vinhpq/mem_baseline/mem0/test_results_20251210_180913/retrieval_eval_20251210_180913.json",
+    "generation_evaluation": "/home/vinhpq/mem_baseline/mem0/test_results_20251210_180913/generation_eval_20251210_180913.json"
+  }
+}

@@ -75,11 +75,37 @@ def extract_json(text):
     If no code block is found, returns the text as-is.
     """
     text = text.strip()
+    
+    # Remove <think> tags if present
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL).strip()
+    
+    # Fail-safe: If response is suspiciously long (hallucination loop), truncate it significantly
+    if len(text) > 4000:
+        # Find the last closing bracket of the facts array if possible, or just hard chop
+        # We assume the valid JSON is at the start.
+        text = text[:4000]
+
     match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
     if match:
         json_str = match.group(1)
     else:
-        json_str = text  # assume it's raw JSON
+        json_str = text
+    
+    # Attempt to fix unterminated JSON (common if we truncated)
+    json_str = json_str.strip()
+    if json_str.startswith("{") and not json_str.endswith("}"):
+        # Try to close the array and object blindly
+        # Most likely it's inside "facts": [...]
+        if '"facts"' in json_str:
+            # Check if we are inside the list
+            if not json_str.endswith("]}"):
+                 json_str += '"]}' if json_str.strip().endswith('"') else ']}'
+        else:
+             json_str += "}"
+             
+    # Remove any trailing commas before closing braces/brackets which is invalid JSON
+    json_str = re.sub(r",\s*([\]}])", r"\1", json_str)
+        
     return json_str
 
 

@@ -1,49 +1,64 @@
-# Mem0 Benchmark Package - Git Ignore
+# =============================================================================
+# Mem0 Benchmark - Git Ignore (UV-based)
+# =============================================================================
 
-# Dataset (downloaded by setup.sh)
-data/
-
-# Memory databases (created during indexing)
-*_memory*/
-test_memory*/
-locomo_memory*/
-
-# Output results
-benchmark_results/
-test_results*/
-*_results/
-
-# Worker logs
-worker_logs/
-
-# Python cache
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
+*.py[cod]
+*$py.class
 *.so
+.Python
+build/
+dist/
+*.egg-info/
 
-# Virtual environments
+# Virtual Environment (UV-managed)
+.venv/
 venv/
-env/
-ENV/
+
+# Benchmark Outputs
+*_memory_benchmark/
+*_results_benchmark/
+worker_logs/
+*.log
+
+# Data (auto-downloaded)
+data/
+!data/.gitkeep
+
+# Vector Stores
+chroma_store/
+chromadb/
+*.chroma
+
+# Model Files
+models/
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.gguf
 
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
-*~
+*.sublime-*
 
 # OS
 .DS_Store
 Thumbs.db
+*~
 
-# Temporary files
-*.log
+# Temporary
 *.tmp
+*.swp
+*.swo
 *.bak
 
-locomo_results_benchmark/
-debug_contriever.py
+# Keep These
+!.gitignore
+!pyproject.toml
+!uv.lock
+!README.md
+!*.sh
+!LICENSE

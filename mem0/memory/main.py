@@ -548,7 +548,14 @@ class Memory(MemoryBase):
                     elif event_type == "UPDATE":
                         memory_id = temp_uuid_mapping.get(resp.get("id"))
                         if not memory_id:
-                            logger.warning(f"Invalid memory_id {resp.get('id')} for UPDATE action. Skipping.")
+                            logger.warning(f"Invalid memory_id {resp.get('id')} for UPDATE action. Fallback to ADD.")
+                            # Fallback to ADD
+                            memory_id = self._create_memory(
+                                data=action_text,
+                                existing_embeddings=new_message_embeddings,
+                                metadata=deepcopy(metadata),
+                            )
+                            returned_memories.append({"id": memory_id, "memory": action_text, "event": "ADD"})
                             continue
                             
                         self._update_memory(

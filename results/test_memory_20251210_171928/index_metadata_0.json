@@ -1,0 +1,72 @@
+[
+  {
+    "conv_id": "conv-26",
+    "num_chunks": 419,
+    "num_indexed": 419,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-26",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-30",
+    "num_chunks": 369,
+    "num_indexed": 369,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-30",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-41",
+    "num_chunks": 663,
+    "num_indexed": 663,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-41",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-42",
+    "num_chunks": 629,
+    "num_indexed": 629,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-42",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-43",
+    "num_chunks": 680,
+    "num_indexed": 680,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-43",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-44",
+    "num_chunks": 675,
+    "num_indexed": 675,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-44",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-47",
+    "num_chunks": 689,
+    "num_indexed": 689,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-47",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-48",
+    "num_chunks": 681,
+    "num_indexed": 681,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-48",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-49",
+    "num_chunks": 509,
+    "num_indexed": 509,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-49",
+    "model_name": "facebook/contriever"
+  },
+  {
+    "conv_id": "conv-50",
+    "num_chunks": 568,
+    "num_indexed": 568,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_171928/conv-50",
+    "model_name": "facebook/contriever"
+  }
+]

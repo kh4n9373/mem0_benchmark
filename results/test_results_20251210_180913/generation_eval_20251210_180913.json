@@ -1,0 +1,230 @@
+{
+  "config": {
+    "retrieval_file": "/home/vinhpq/mem_baseline/mem0/test_results_20251210_180913/retrieval_results_20251210_180913.json",
+    "ground_truth": "/home/vinhpq/mem_baseline/mem0/data/locomo/processed_data/locomo_small.json",
+    "llm_model": "Qwen/Qwen3-8B",
+    "context_k": 5,
+    "base_url": "http://localhost:8001/v1",
+    "disable_thinking": true
+  },
+  "overall": {
+    "f1": 0.010555555555555556,
+    "bleu": 0.0031760727013348394,
+    "rouge1": 0.017222222222222222,
+    "rouge2": 0.0,
+    "rougeL": 0.017222222222222222,
+    "bertscore_f1": 0.8345340490341187,
+    "count": 20
+  },
+  "by_category": {
+    "1": {
+      "f1": 0.0,
+      "bleu": 0.0050198236920676745,
+      "rouge1": 0.016666666666666666,
+      "rouge2": 0.0,
+      "rougeL": 0.016666666666666666,
+      "bertscore_f1": 0.8328472375869751,
+      "count": 8
+    },
+    "2": {
+      "f1": 0.021111111111111112,
+      "bleu": 0.005769860052900338,
+      "rouge1": 0.021111111111111112,
+      "rouge2": 0.0,
+      "rougeL": 0.021111111111111112,
+      "bertscore_f1": 0.8292330503463745,
+      "count": 10
+    },
+    "3": {
+      "f1": 0.0,
+      "bleu": 0.02503449365367768,
+      "rouge1": 0.0,
+      "rouge2": 0.0,
+      "rougeL": 0.0,
+      "bertscore_f1": 0.867786169052124,
+      "count": 2
+    }
+  },
+  "per_question": [
+    {
+      "question_id": 0,
+      "question": "When did Caroline go to the LGBTQ support group?",
+      "category": "2",
+      "ground_truth": "7 May 2023",
+      "generated_answer": "Yesterday",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 1,
+      "question": "When did Melanie paint a sunrise?",
+      "category": "2",
+      "ground_truth": "2022",
+      "generated_answer": "Last year.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 2,
+      "question": "What fields would Caroline be likely to pursue in her educaton?",
+      "category": "3",
+      "ground_truth": "Psychology, counseling certification",
+      "generated_answer": "Education fields related to helping kids, such as childhood education or special education.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 3,
+      "question": "What did Caroline research?",
+      "category": "1",
+      "ground_truth": "Adoption agencies",
+      "generated_answer": "The context does not mention what Caroline researched.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 4,
+      "question": "What is Caroline's identity?",
+      "category": "1",
+      "ground_truth": "Transgender woman",
+      "generated_answer": "Caroline is a person mentioned in the conversation who is dealing with changes.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 5,
+      "question": "When did Melanie run a charity race?",
+      "category": "2",
+      "ground_truth": "The sunday before 25 May 2023",
+      "generated_answer": "The context provided does not mention when Melanie ran a charity race.",
+      "f1": 0.1111111111111111,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 6,
+      "question": "When is Melanie planning on going camping?",
+      "category": "2",
+      "ground_truth": "June 2023",
+      "generated_answer": "Next month.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 7,
+      "question": "What is Caroline's relationship status?",
+      "category": "1",
+      "ground_truth": "Single",
+      "generated_answer": "Not specified.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 8,
+      "question": "When did Caroline give a speech at a school?",
+      "category": "2",
+      "ground_truth": "The week before 9 June 2023",
+      "generated_answer": "The context provided does not mention when Caroline gave a speech at a school.",
+      "f1": 0.1,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 9,
+      "question": "When did Caroline meet up with her friends, family, and mentors?",
+      "category": "2",
+      "ground_truth": "The week before 9 June 2023",
+      "generated_answer": "Caroline met up with her friends, family, and mentors when she found a supportive community.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 10,
+      "question": "How long has Caroline had her current group of friends for?",
+      "category": "2",
+      "ground_truth": "4 years",
+      "generated_answer": "The context provided does not mention how long Caroline has had her current group of friends.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 11,
+      "question": "Where did Caroline move from 4 years ago?",
+      "category": "1",
+      "ground_truth": "Sweden",
+      "generated_answer": "The context provided does not mention where Caroline moved from 4 years ago.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 12,
+      "question": "How long ago was Caroline's 18th birthday?",
+      "category": "2",
+      "ground_truth": "10 years ago",
+      "generated_answer": "The information about Caroline's 18th birthday is not provided in the context.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 13,
+      "question": "What career path has Caroline decided to persue?",
+      "category": "1",
+      "ground_truth": "counseling or mental health for Transgender people",
+      "generated_answer": "The context provided does not mention Caroline's career path.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 14,
+      "question": "Would Caroline still want to pursue counseling as a career if she hadn't received support growing up?",
+      "category": "3",
+      "ground_truth": "Likely no",
+      "generated_answer": "Yes.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 15,
+      "question": "What activities does Melanie partake in?",
+      "category": "1",
+      "ground_truth": "pottery, camping, painting, swimming",
+      "generated_answer": "Melanie partakes in painting and spending quality time with her family.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 16,
+      "question": "When did Melanie sign up for a pottery class?",
+      "category": "2",
+      "ground_truth": "2 July 2023",
+      "generated_answer": "Yesterday",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 17,
+      "question": "When is Caroline going to the transgender conference?",
+      "category": "2",
+      "ground_truth": "July 2023",
+      "generated_answer": "This month.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 18,
+      "question": "Where has Melanie camped?",
+      "category": "1",
+      "ground_truth": "beach, mountains, forest",
+      "generated_answer": "The context provided does not mention where Melanie has camped.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    },
+    {
+      "question_id": 19,
+      "question": "What do Melanie's kids like?",
+      "category": "1",
+      "ground_truth": "dinosaurs, nature",
+      "generated_answer": "The context does not mention what Melanie's kids like.",
+      "f1": 0.0,
+      "num_chunks_retrieved": 100
+    }
+  ]
+}

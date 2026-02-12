@@ -1,0 +1,9 @@
+[
+  {
+    "conv_id": "conv-26",
+    "num_chunks": 419,
+    "num_indexed": 419,
+    "persist_directory": "/home/vinhpq/mem_baseline/mem0/test_memory_20251210_180913/conv-26",
+    "model_name": "facebook/contriever"
+  }
+]
