@@ -145,7 +145,8 @@ EOF
         echo "  vllm serve Qwen/Qwen2.5-7B-Instruct \\"
         echo "    --port 8002 \\"
         echo "    --gpu-memory-utilization 0.9 \\"
-        echo "    --tool-call-parser openai"
+        echo "    --tool-call-parser hermes \\"
+        echo "    --enable-auto-tool-choice"
         echo ""
         echo -e "${BLUE}Alternative models:${NC}"
         echo "  • Qwen/Qwen2.5-14B-Instruct (better quality)"
@@ -229,7 +230,9 @@ EOF
 clean_previous() {
     print_header "STEP 5: Cleanup"
     
-    rm -rf "$MEMORY_DIR" "$RESULTS_DIR" 2>/dev/null || true
+    # Only clean results, keep memory to allow resuming
+    rm -rf "$RESULTS_DIR" 2>/dev/null || true
+    # rm -rf "$MEMORY_DIR" 2>/dev/null || true  # Keep this to resume indexing
     mkdir -p "$LOG_DIR"
     print_success "Clean workspace ready"
 }

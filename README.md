@@ -9,10 +9,10 @@ Run Mem0 benchmarks on LOCOMO and LongMemEval datasets.
 ### 1. Start LLM Server
 
 ```bash
-CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen2.5-7B-Instruct \
+CUDA_VISIBLE_DEVICES=0 vllm serve Qwen/Qwen2.5-7B-Instruct \
   --port 8002 \
   --gpu-memory-utilization 0.9 \
-  --tool-call-parser openai \
+  --tool-call-parser hermes \
   --enable-auto-tool-choice
 ```
 

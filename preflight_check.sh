@@ -125,7 +125,7 @@ if curl -s -f -m 2 http://localhost:8002/v1/models > /dev/null 2>&1; then
         echo ""
         echo -e "${YELLOW}Your LLM server lacks tool calling support.${NC}"
         echo -e "${YELLOW}Restart with:${NC}"
-        echo "  vllm serve Qwen/Qwen2.5-7B-Instruct --port 8002 --tool-call-parser openai"
+        echo "  vllm serve Qwen/Qwen2.5-7B-Instruct --port 8002 --tool-call-parser hermes --enable-auto-tool-choice"
         echo ""
     fi
 else
@@ -135,7 +135,8 @@ else
     echo "  vllm serve Qwen/Qwen2.5-7B-Instruct \\"
     echo "    --port 8002 \\"
     echo "    --gpu-memory-utilization 0.9 \\"
-    echo "    --tool-call-parser openai"
+    echo "    --tool-call-parser hermes \\"
+    echo "    --enable-auto-tool-choice"
     echo ""
 fi
 

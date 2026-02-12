@@ -42,7 +42,7 @@ cd mem0
 CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen2.5-7B-Instruct \
   --port 8002 \
   --gpu-memory-utilization 0.9 \
-  --tool-call-parser openai \
+  --tool-call-parser hermes \
   --enable-auto-tool-choice
 ```
 
@@ -98,7 +98,7 @@ pkill -f "vllm serve"
 CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen2.5-14B-Instruct \
   --port 8002 \
   --gpu-memory-utilization 0.85 \
-  --tool-call-parser openai \
+  --tool-call-parser hermes \
   --enable-auto-tool-choice
 ```
 
@@ -140,7 +140,7 @@ locomo_results_benchmark/
 ```bash
 # Terminal 1: Start LLM
 CUDA_VISIBLE_DEVICES=1 vllm serve Qwen/Qwen2.5-7B-Instruct \
-  --port 8002 --tool-call-parser openai --enable-auto-tool-choice
+  --port 8002 --tool-call-parser hermes --enable-auto-tool-choice
 
 # Terminal 2: Run Benchmark
 cd mem0 && bash ./full_benchmark_locomo.sh

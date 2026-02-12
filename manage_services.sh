@@ -18,7 +18,7 @@ NC='\033[0m'
 NEO4J_CONTAINER="neo4j-mem0"
 NEO4J_PASSWORD="password"
 LLM_PORT=8002
-LLM_MODEL="Qwen/Qwen3-8B"
+LLM_MODEL="Qwen/Qwen2.5-7B-Instruct"
 
 print_header() {
     echo ""
@@ -185,7 +185,8 @@ llm_help() {
     echo "  vllm serve Qwen/Qwen2.5-7B-Instruct \\"
     echo "    --port $LLM_PORT \\"
     echo "    --gpu-memory-utilization 0.9 \\"
-    echo "    --tool-call-parser openai"
+    echo "    --tool-call-parser hermes \\"
+    echo "    --enable-auto-tool-choice"
     echo ""
     echo -e "${GREEN}Why Qwen2.5?${NC}"
     echo "  ✅ Native tool calling support"
