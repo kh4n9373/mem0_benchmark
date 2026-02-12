@@ -98,7 +98,7 @@ def process_retrieval(
                 # Retrieve
                 try:
                     search_results = memory.search(query_text, user_id=conv_id, limit=top_k)
-                    print(f"DEBUG: Search results for '{query_text}': {search_results}")
+                    # print(f"DEBUG: Search results for '{query_text}': {search_results}")
                 except Exception as e:
                     print(f"Error during search for query '{query_text}' in conv {conv_id}: {e}")
                     search_results = {"results": [], "relations": []} # Provide a default empty structure

@@ -17,7 +17,7 @@ NC='\033[0m'
 
 # Config
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-DATASET_PATH="$SCRIPT_DIR/data/locomo/processed_data/longmemeval_processed_data.json"  # Auto-relative
+DATASET_PATH="$SCRIPT_DIR/data/processed_data/longmemeval_processed_data.json"  # Auto-relative
 MEMORY_DIR="$SCRIPT_DIR/longmemeval_memory_benchmark"  # Use absolute
 RESULTS_DIR="$SCRIPT_DIR/longmemeval_results_benchmark"
 LOG_DIR="$SCRIPT_DIR/worker_logs/longmemeval"
